@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Ceteras_Alina_Iulia_Laborator10.Models;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using SQLite;
+
 
 namespace Ceteras_Alina_Iulia_Laborator10
 {
@@ -29,6 +31,21 @@ namespace Ceteras_Alina_Iulia_Laborator10
             var slist = (ShopList)BindingContext;
             await App.Database.DeleteShopListAsync(slist);
             await Navigation.PopAsync();
+        }
+        async void OnChooseButtonClicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new ProductPage((ShopList)
+           this.BindingContext)
+            {
+                BindingContext = new Product()
+            });
+        }
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+            var shopl = (ShopList)BindingContext;
+
+            listView.ItemsSource = await App.Database.GetListProductsAsync(shopl.ID);
         }
     }
 }
